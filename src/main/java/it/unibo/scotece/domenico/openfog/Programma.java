@@ -10,6 +10,7 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.*;
+import it.unibo.scotece.domenico.openfog.config.Config;
 
 import java.net.URI;
 import java.nio.file.Paths;
@@ -26,7 +27,7 @@ public class Programma {
         get("/info", (req, res) ->{
 
             final DockerClient docker = DefaultDockerClient.builder()
-                    .uri(URI.create("https://10.0.0.3:2376"))
+                    .uri(URI.create("https://10.0.0.7:2376"))
                     .dockerCertificates(new DockerCertificates(Paths.get("/home/dscotece/.docker/machine/certs")))
                     .build();
 
@@ -35,16 +36,17 @@ public class Programma {
 
             // By pulling
             final RegistryAuth registryAuth = RegistryAuth.builder()
-                    .email("EMAIL")
-                    .username("USER")
-                    .password("PWD")
+                    //.email(Config.email)
+                    .username(Config.user)
+                    .password(Config.pwd)
+                    .serverAddress(Config.server)
                     .build();
-            docker.pull("domen88/hello:latest", registryAuth);
+            docker.pull(Config.server+"/demo/httpd", registryAuth);
 
             //Container MAP PORT
             Map<String, List<PortBinding>> portBindings = Maps.newHashMap();
             // you can leave the host IP empty for the PortBinding.of first parameter
-            portBindings.put("80/tcp", Lists.newArrayList(PortBinding.of("", "8090")));
+            portBindings.put("80/tcp", Lists.newArrayList(PortBinding.of("", "80")));
             HostConfig hostConfig = HostConfig.builder()
                     .portBindings(portBindings)
                     // other host config here
@@ -53,7 +55,7 @@ public class Programma {
             //Create Container
             final ContainerCreation container = docker.createContainer(
                     ContainerConfig.builder()
-                            .image("domen88/hello")
+                            .image(Config.server+"/demo/httpd")
                             .hostConfig(hostConfig)
                             .build());
 
