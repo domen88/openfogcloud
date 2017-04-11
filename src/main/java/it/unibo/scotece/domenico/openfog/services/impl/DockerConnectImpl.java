@@ -19,15 +19,17 @@ public class DockerConnectImpl implements DockerConnect {
 
     public DockerConnectImpl() throws DockerCertificateException {
         this.docker = connect();
+        this.cachedDocker.add(this.docker);
     }
 
     @Override
     public DockerClient connect() throws DockerCertificateException {
         final DockerClient docker = DefaultDockerClient.builder()
-                .uri(URI.create("https://10.0.0.7:2376"))
-                .dockerCertificates(new DockerCertificates(Paths.get("/home/dscotece/.docker/machine/certs")))
-                .build();
+            .uri(URI.create("https://10.0.0.7:2376"))
+            .dockerCertificates(new DockerCertificates(Paths.get("/home/dscotece/.docker/machine/certs")))
+            .build();
         return docker;
+
     }
 
     public DockerClient getConnection() throws DockerCertificateException {
