@@ -4,6 +4,7 @@ import static spark.Spark.*;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerCertificates;
 import com.spotify.docker.client.DockerClient;
@@ -11,6 +12,7 @@ import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.*;
 import it.unibo.scotece.domenico.openfog.config.Config;
+import spark.ResponseTransformer;
 
 import java.net.URI;
 import java.nio.file.Paths;
@@ -24,7 +26,7 @@ public class Programma {
 
         port(8080);
 
-        get("/info", (req, res) ->{
+        get("/info", "application/json", (req, res) -> {
 
             final DockerClient docker = DefaultDockerClient.builder()
                     .uri(URI.create("https://10.0.0.7:2376"))
@@ -34,6 +36,7 @@ public class Programma {
             final Info info = docker.info();
             System.out.println(info);
 
+           /*
             // By pulling
             final RegistryAuth registryAuth = RegistryAuth.builder()
                     //.email(Config.email)
@@ -63,11 +66,17 @@ public class Programma {
             docker.startContainer(container.id());
 
             System.out.println(container.toString());
+
+            */
+
             // Close the docker client
             docker.close();
 
-            return info.toString();
+            Gson json = new Gson();
+
+            return json.toJson(info);
         });
 
     }
+
 }
