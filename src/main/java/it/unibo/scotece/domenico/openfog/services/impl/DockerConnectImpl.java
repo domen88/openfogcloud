@@ -18,12 +18,15 @@ public class DockerConnectImpl implements DockerConnect {
     private List<DockerClient> cachedDocker = new ArrayList<>(1);
 
     public DockerConnectImpl() throws DockerCertificateException {
+
         this.docker = connect();
         this.cachedDocker.add(this.docker);
+
     }
 
     @Override
     public DockerClient connect() throws DockerCertificateException {
+
         final DockerClient docker = DefaultDockerClient.builder()
             .uri(URI.create("https://10.0.0.7:2376"))
             .dockerCertificates(new DockerCertificates(Paths.get("/home/dscotece/.docker/machine/certs")))
@@ -33,10 +36,12 @@ public class DockerConnectImpl implements DockerConnect {
     }
 
     public DockerClient getConnection() throws DockerCertificateException {
+
         if (this.cachedDocker.isEmpty()){
             return connect();
         } else {
             return this.cachedDocker.get(0);
         }
+
     }
 }
