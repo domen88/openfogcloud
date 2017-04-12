@@ -2,3 +2,7 @@
 .idea/
 
 *.iml
+
+src/main/java/it/unibo/scotece/domenico/openfog/config/
+src/test/
+target/
