@@ -35,6 +35,13 @@ public class DockerConnectImpl implements DockerConnect {
 
     }
 
+    @Override
+    public void close() {
+        this.cachedDocker.remove(this.docker);
+        this.docker.close();
+    }
+
+
     public DockerClient getConnection() throws DockerCertificateException {
 
         if (this.cachedDocker.isEmpty()){

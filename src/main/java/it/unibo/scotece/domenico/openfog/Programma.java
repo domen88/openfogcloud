@@ -27,10 +27,25 @@ public class Programma {
             System.out.println(info);
 
             // Close the docker client
-            docker.close();
+            dockerConnector.close();
 
             Gson json = new Gson();
             return json.toJson(info);
+
+        });
+
+        get("/version", "application/json", (req, res) -> {
+
+            DockerClient docker = dockerConnector.getConnection();
+
+            final Version version = docker.version();
+            System.out.println(version);
+
+            // Close the docker client
+            dockerConnector.close();
+
+            Gson json = new Gson();
+            return json.toJson(version);
 
         });
 

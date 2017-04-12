@@ -6,5 +6,6 @@ import com.spotify.docker.client.exceptions.DockerCertificateException;
 public interface DockerConnect {
 
     DockerClient connect() throws DockerCertificateException;
+    void close();
 
 }
